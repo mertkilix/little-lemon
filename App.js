@@ -1,13 +1,47 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import { useState, useEffect, useRef} from 'react';
+import { Switch } from 'react-native-paper';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+import Onboarding from './screens/Onboarding'
+import HomeScreen from './screens/HomeScreen'
+import Profile from './screens/Profile'
+import { getData, saveData, updateData, getAllData } from './utils';
+
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { NavigationContainer } from '@react-navigation/native';
+
+
+export default function App( ) {
+
+  const Stack = createNativeStackNavigator();
+  
+  const [initialRoute, setInitialRoute] = useState('Onboarding');
+  const [loginStatus,setLoginStatus] = useState('false');
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    getAllData().then((dataObject) => {
+
+
+      // Check if the user is already logged in
+
+    });
+  }, []);
+
+
+  return ( <NavigationContainer>
+
+
+<Stack.Navigator initialRouteName="Onboarding" >
+<Stack.Screen name="Onboarding" component={Onboarding} />
+<Stack.Screen name="Profile" component={Profile} />
+<Stack.Screen name="HomeScreen" component={HomeScreen} />
+
+</Stack.Navigator>
+</NavigationContainer>  );
 }
 
 const styles = StyleSheet.create({
