@@ -12,8 +12,8 @@ import {
   Image,
 } from 'react-native';
 import { useHeaderHeight } from '@react-navigation/elements';
-
-import { validateEmail, validateName } from '../utils';
+import HomeScreen from './HomeScreen'
+import { validateEmail, validateName,validatePhone } from '../utils';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
@@ -27,11 +27,18 @@ export default Onboarding = ({navigation}) => {
 
   const [email, onChangeEmail] = useState('');
   const [name, onChangeName] = useState('');
+  const [lastName, onChangeLastName] = useState('');
+  const [phone, onChangePhone] = useState('');
+
+
   const [dbName, setDbName] = useState('');
+  const [dbLastName, setDbLastName] = useState('');
+
   const [dbEmail, setDbEmail] = useState('');
   const [dbLogin, setDbLogin] = useState(false);
   const isEmailValid = validateEmail(email);
-  const isNameValid = validateName(name);
+  const isPhoneValid = validatePhone(phone);
+  const isNameValid = (validateName(name) && validateName(lastName));
   const headerHeight = useHeaderHeight();
 
   useEffect(() => {
@@ -44,12 +51,14 @@ export default Onboarding = ({navigation}) => {
       // Access individual data items
       setDbEmail(dataObject['email']);
       setDbName(dataObject['name']);
+      setDbName(dataObject['lastname']);
+
       setDbLogin(dataObject['login']);
 
 
       if (dataObject['login'] === 'true') {
         console.log('ben girsi yaptim  aq 31')
-        navigation.replace('Profile');
+        navigation.replace('HomeScreen');
      
       }
       else{
@@ -85,6 +94,27 @@ export default Onboarding = ({navigation}) => {
         placeholder={'name'}
         keyboardType={'text'}
       />
+      <Text style={styles.regularText}>Last Name </Text>
+      <TextInput
+        style={styles.inputBox}
+        value={lastName}
+        onChangeText={lastName =>{
+          onChangeLastName(lastName);
+        }}
+        placeholder={'lastname'}
+        keyboardType={''}
+      />
+            <Text style={styles.regularText}>Phone number</Text>
+      <TextInput
+        style={styles.inputBox}
+        value={phone}
+        onChangeText={phone =>{
+          onChangePhone(phone);
+        }}
+        placeholder={'phone'}
+        keyboardType={'phone-pad'}
+        textContentType={'telephoneNumber'}
+      />
             <Text style={styles.regularText}>Email </Text>
       <TextInput
         style={styles.inputBox}
@@ -99,11 +129,14 @@ export default Onboarding = ({navigation}) => {
         onPress={() => {
             saveData('login', 'true');
             saveData('name', name);
+            saveData('lastname', lastName);
+            saveData('phone',phone)
+
             saveData('email', email);
-            navigation.replace('Profile');
+            navigation.navigate('HomeScreen');
 
         }}
-        disabled={!isEmailValid || !isNameValid}
+        disabled={(!isEmailValid || !isNameValid || !isPhoneValid)}
       >
         Next
       </Button>
@@ -132,10 +165,10 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 24,
     padding: 1,
-    marginVertical: 8,
+    marginVertical: 1,
     color: 'black',
     textAlign: 'center',
-    paddingBottom:100,
+    paddingBottom: 20,
   },
   inputBox: {
     height: 40,

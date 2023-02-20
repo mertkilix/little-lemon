@@ -15,8 +15,23 @@ export const validateEmail = (email) => {
 };
 
 
+
+
+export const validatePhone = (phone) => {
+  let reg = /^\d{10}$/;
+  if (reg.test(phone) === false) {
+    return false;
+    
+  }
+  if(reg.test(phone) === true) {
+
+    return true;
+
+  }
+};
+
 export const validateName = (name) => {
-  let reg = /^[a-zA-Z]+$/;;
+  let reg = /^[a-z ,.'-]+$/i  ;;
   if (reg.test(name) === false) {
     return false;
     

@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
 import { useState, useEffect, useRef} from 'react';
@@ -7,9 +9,12 @@ import Onboarding from './screens/Onboarding'
 import HomeScreen from './screens/HomeScreen'
 import Profile from './screens/Profile'
 import { getData, saveData, updateData, getAllData } from './utils';
-
+import Header from './Header';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Image } from 'react-native'
+import { HeaderBackButton } from '@react-navigation/elements';
+import { getHeaderTitle } from '@react-navigation/elements';
 
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -35,9 +40,16 @@ export default function App( ) {
   return ( <NavigationContainer>
 
 
-<Stack.Navigator initialRouteName="Onboarding" >
+<Stack.Navigator
+        initialRouteName="Onboarding"
+        screenOptions={{
+          header: (props) => <Header {...props} />,
+        }}
+      >
 <Stack.Screen name="Onboarding" component={Onboarding} />
-<Stack.Screen name="Profile" component={Profile} />
+<Stack.Screen name="Profile" component={Profile}
+
+/>
 <Stack.Screen name="HomeScreen" component={HomeScreen} />
 
 </Stack.Navigator>
