@@ -75,14 +75,14 @@ export default Onboarding = ({navigation}) => {
     style={styles.container}
     behavior={Platform.OS === "ios" ? "padding" : "height"}
   >
-    <ScrollView keyboardDismissMode="on-drag">
-            <Image
+    <ScrollView keyboardDismissMode="on-drag"><Image
           style={styles.image}
           source={require('../images/Logo.png')}
           resizeMode="contain"
           accessible={true}
           accessibilityLabel={'Little Lemon Logo'}
         />
+            
               <Text style={styles.titleText}>Let us get to know you </Text>
       <Text style={styles.regularText}>First Name </Text>
       <TextInput
@@ -124,22 +124,22 @@ export default Onboarding = ({navigation}) => {
         }}
         placeholder={'email'}
         keyboardType={'email-address'}
-      />
-<Button
+      /><View style={{paddingTop:50,paddingHorizontal:170}}>
+<Button 
         onPress={() => {
             saveData('login', 'true');
             saveData('name', name);
-            saveData('lastname', lastName);
+            saveData('lastName', lastName);
             saveData('phone',phone)
-
             saveData('email', email);
+
             navigation.navigate('HomeScreen');
 
         }}
         disabled={(!isEmailValid || !isNameValid || !isPhoneValid)}
       >
         Next
-      </Button>
+      </Button></View>
       </ScrollView ></KeyboardAvoidingView>
 
   );
@@ -172,14 +172,13 @@ const styles = StyleSheet.create({
   },
   inputBox: {
     height: 40,
-    margin: 22,
-    marginHorizontal:50,
+    marginHorizontal: 10,
     borderRadius: 10,
     borderWidth: 1,
     padding: 10,
     fontSize: 16,
-    borderColor: 'EDEFEE',
-    backgroundColor: '#EDEFEE',
+    borderColor: 'gray',
+    backgroundColor: 'white',
   },
   button: {
     fontSize: 22,
@@ -189,7 +188,7 @@ const styles = StyleSheet.create({
     marginRight:20,
     alignItems:'center',
     backgroundColor: '#33413e',
-
+    paddingTop:10,
     borderRadius: 10,
   },
   buttonText: {

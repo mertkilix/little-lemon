@@ -46,11 +46,13 @@ export default function App( ) {
           header: (props) => <Header {...props} />,
         }}
       >
-<Stack.Screen name="Onboarding" component={Onboarding} />
+<Stack.Screen name="Onboarding" component={Onboarding}  options={{ headerShown: false }}
+ />
 <Stack.Screen name="Profile" component={Profile}
 
 />
-<Stack.Screen name="HomeScreen" component={HomeScreen} />
+<Stack.Screen name="HomeScreen" component={HomeScreen}   options={{ headerShown: false }}
+ />
 
 </Stack.Navigator>
 </NavigationContainer>  );
