@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Checkbox from 'expo-checkbox';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { MaskedTextInput } from "react-native-mask-text";
 
 import { useState, useEffect } from 'react';
 import {
@@ -47,7 +48,7 @@ const Profile = ({ navigation }) => {
         quality: 1,
       });
       console.log(result);
-      if (!result.cancelled) {
+      if (!result.canceled) {
         if (result.assets && result.assets.length > 0) {
           await AsyncStorage.setItem('profilePicture', result.assets[0].uri);
           setProfilePicture(result.assets[0].uri);
@@ -162,7 +163,7 @@ const Profile = ({ navigation }) => {
       getName(dataObject['name']);
       getPhone(dataObject['phone']);
 
-
+ 
       console.log('name: ', name);
       console.log('last: ', lastName);
       console.log('email ', email);
@@ -228,6 +229,7 @@ handleRemovePicture();
       <TextInput
         style={styles.inputBox}
         value={name}
+
         onChangeText={newname => {
           onChangeName(newname);
         }}
@@ -238,7 +240,7 @@ handleRemovePicture();
 
       <TextInput
         style={styles.inputBox}
-        value={newlastName}
+        value={lastName}
         onChangeText={newlastName => {
           onChangeLastName(newlastName);
         }}
@@ -328,7 +330,7 @@ handleRemovePicture();
 
 
           onPress={() => {
-            navigation.replace('HomeScreen')
+            navigation.goBack()
 
           }
 
@@ -475,26 +477,11 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     backgroundColor: 'white',
   },
-  button: {
-    fontSize: 22,
-    padding: 10,
-    marginVertical: 8,
-    marginHorizontal: 290,
-    marginRight: 20,
-    alignItems: 'center',
-    backgroundColor: '#33413e',
-
-    borderRadius: 10,
-  },
   logbuttonText: {
     textAlign: 'center',
     fontSize: 15,
     fontWeight: 'bold',
   },
-
-
-
-
   profilePicture: {
     width: 70,
     height: 70,
@@ -512,9 +499,7 @@ const styles = StyleSheet.create({
     color: 'gray',
 
   },
-  initials: {
-    
-   
+  initials: { 
     right: 10,
     borderRadius: 58,
     backgroundColor: '#62d6c4',
@@ -524,9 +509,6 @@ const styles = StyleSheet.create({
     height: 33,
     alignSelf: 'center',
     alignItems: 'center',
-
-    
-
   },
   checkTitle: {
     fontSize: 11,
@@ -543,7 +525,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     alignItems: 'center',
     alignSelf: 'center',
-
     color: '#c4c9c7',
 
   },

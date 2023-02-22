@@ -51,7 +51,7 @@ export default function App( ) {
 <Stack.Screen name="Profile" component={Profile}
 
 />
-<Stack.Screen name="HomeScreen" component={HomeScreen}   options={{ headerShown: false }}
+<Stack.Screen name="HomeScreen" component={HomeScreen}   
  />
 
 </Stack.Navigator>

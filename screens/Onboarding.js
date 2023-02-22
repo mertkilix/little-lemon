@@ -17,6 +17,7 @@ import { validateEmail, validateName,validatePhone } from '../utils';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 const Stack = createNativeStackNavigator();
+import { MaskedTextInput } from "react-native-mask-text";
 
 import Button from "../components/Button";
 
@@ -105,8 +106,11 @@ export default Onboarding = ({navigation}) => {
         keyboardType={''}
       />
             <Text style={styles.regularText}>Phone number</Text>
-      <TextInput
+      <MaskedTextInput
         style={styles.inputBox}
+
+        mask="+1-999-999-9999"
+
         value={phone}
         onChangeText={phone =>{
           onChangePhone(phone);
