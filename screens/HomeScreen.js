@@ -1,25 +1,73 @@
 import { useState, useEffect,useCallback, useMemo } from 'react';
 
-import { View, Text,StyleSheet,Image, Pressable,  StatusBar,  FlatList,  SafeAreaView} from 'react-native';
+import { View, Text,StyleSheet,Image, Pressable,  StatusBar,  FlatList,  SafeAreaView,TouchableOpacity,TextInput} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Button } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import Filters from '../Filters';
 import { getSectionListData, useUpdateEffect } from '../utils';
 import debounce from 'lodash.debounce';
 import { Searchbar } from 'react-native-paper';
+const BASE_URL = 'https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main';
+import Header from '../Header';
 
 function HomeScreen({ navigation }) {
    const [data, setData] = useState([]);
-   const sections = ['mains', 'starters', 'desserts'];
+   const sections = ['mains', 'starters', 'desserts', 'drinks'];
    const [query, setQuery] = useState('');
+   const [selectedCategories, setSelectedCategories] = useState([]);
+   const [menuItems, setMenuItems] = useState([]);
+   const [searchText, setSearchText] = useState('');
+
+
+   const filteredMenuItems = menuItems.filter((menuItem) =>
+   (selectedCategories.length === 0 || selectedCategories.includes(menuItem.category)) &&
+   (searchText === '' || menuItem.name.toLowerCase().includes(searchText.toLowerCase()) || menuItem.description.toLowerCase().includes(searchText.toLowerCase()))
+ );
+   const Filters = ({ onChange, selections, sections }) => {
+    return (
+      <View style={styles.filtersContainer}>
+        {sections.map((section, index) => (
+          <TouchableOpacity
+            onPress={() => {
+              onChange(index);
+              handleCategorySelection(section);
+              console.log(section);
+            }}
+            style={{
+  
+  
+              right: 10,
+              borderRadius: 8,
+              backgroundColor: selections[index] ? 'lightgray' : 'black',
+              padding: 8,
+              borderRadius: 10,
+  
+            }}>
+            <View>
+              <Text style={{ color: selections[index] ? 'black' : 'white' ,
+            fontWeight: selections[index] ? 'bold' : '' ,
+            
+            
+            }}>
+                {section}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
+
+
 
    const [filterSelections, setFilterSelections] = useState(
     sections.map(() => false)
   );
 
-
+  const handleSearchTextChange = (text) => {
+    setSearchText(text);
+  };
   useUpdateEffect(() => {
     (async () => {
       const activeCategories = sections.filter((s, i) => {
@@ -41,7 +89,13 @@ function HomeScreen({ navigation }) {
       }
     })();
   }, [filterSelections, query]);
-
+  const handleCategorySelection = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
   const lookup = useCallback((q) => {
     setQuery(q);
   }, []);
@@ -61,43 +115,26 @@ function HomeScreen({ navigation }) {
 
 
    useEffect(() => {
-    const getMenu = async () => {
+    const fetchMenuItems = async () => {
       try {
         const response = await fetch('https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/capstone.json');
-        const json = await response.json();
-        setData(json.menu);
+        const data = await response.json();
+        setMenuItems(data.menu);
       } catch (error) {
         console.error(error);
-      } finally {
-        setLoading(false);
       }
     };
-    getMenu();
+    fetchMenuItems();
 
      }, []);
 
-     const renderItem = ({ item }) => (
-      <Item name={item.name} price={item.price} description={item.description} image={item.image}  category={item.category} />
-    );
-
-     const Item = ({ name, price, description,image }) => (
-      <View style={styles.itemcolumns}>
-      <View style={styles.itemcontainer}>
-      <View style={styles.itemleft}>
-      <Text style={styles.itemName}>{name}</Text>
-      <Text style={styles.itemDescription}>{description}</Text>
-      <Text style={styles.itemPrice}>{price}</Text>
-      </View>
-      <View style={styles.itemRight}>
-      <Image source={{uri:(`https://github.com/Meta-Mobile-Developer-PC/Working-With-Data-API/blob/main/images/${image}?raw=true`)}} resizeMode="cover" style={styles.itemimage} />
-      </View>
-      </View>
-      </View>
-    );
 
   return (
 
     <>
+
+        <ScrollView keyboardDismissMode="on-drag" style={styles.scrollContainer}>
+
       <View style={styles.herocontainer}>
       <Text style={styles.h1}>Little Lemon</Text>
 
@@ -110,12 +147,22 @@ function HomeScreen({ navigation }) {
 
       </View>
       <Pressable>
-      <Image source={require('../images/search.png')} resizeMode="cover" style={styles.searchimage} />
+      <View style={styles.searchContainer}><Image source={require('../images/search.png')} resizeMode="cover" style={styles.searchimage}/>
+      <View style={styles.searchBarContainer}>
+        <TextInput
+          style={styles.searchBar}
+          placeholder="Search"
+          value={searchText}
+          onChangeText={handleSearchTextChange}
+        />
+        </View>
+      </View>
       </Pressable>
       </View>
 
       <Text style={styles.order}>ORDER FOR DELIVERY    </Text>
 
+ 
       <View style={styles.filtercontainer}>
 
 
@@ -124,7 +171,6 @@ function HomeScreen({ navigation }) {
 
       </View>
       
-      <SafeAreaView style={styles.container}>
 
       <Filters
         selections={filterSelections}
@@ -133,19 +179,26 @@ function HomeScreen({ navigation }) {
       />
 
 
-<FlatList
-          data={data}
-          keyExtractor={({ id }, index) => id}
-          renderItem={renderItem}
-
-
-          
-        />
 
 
 
+      {filteredMenuItems.map((menuItem) => (
 
-            </SafeAreaView>
+      <View style={styles.itemcolumns}>
+      <View style={styles.itemcontainer}>
+      <View style={styles.itemleft}>
+      <Text style={styles.itemName}>{menuItem.name}</Text>
+      <Text style={styles.itemDescription}>{menuItem.description}</Text>
+      <Text style={styles.itemPrice}>{menuItem.price}</Text>
+      </View>
+      <View style={styles.itemRight}>
+      <Image source={{uri:(`${BASE_URL}/images/${menuItem.image}?raw=true`)}} resizeMode="cover" style={styles.itemimage} />
+      </View>
+      </View>
+      </View>
+        ))}
+
+      </ScrollView>
 
 </>
   );
@@ -155,6 +208,11 @@ function HomeScreen({ navigation }) {
 const Stack = createNativeStackNavigator();
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+
+  },
     container: {
       flex: 1,
       paddingTop: StatusBar.currentHeight,
@@ -178,11 +236,34 @@ itemcontainer: {
 paddingTop:10,
 
 flexDirection: 'row',
-    justifyContent:'center',
     borderTopColor: 'black',
+    paddingLeft:10,
     borderTopWidth: StyleSheet.hairlineWidth,
   },
+  searchBarContainer: {
 
+alignSelf:'center',
+
+
+},
+
+  searchContainer: {
+    flexDirection: 'row',
+    justifyContent:'flex-start',
+
+    backgroundColor: '#495e57',
+  },
+  searchBar: {
+    marginHorizontal:15,
+
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 10,
+    paddingHorizontal: 110,
+    paddingVertical: -20,
+    height:30,
+    backgroundColor: 'white',
+  },
 filtercontainer: {
   flexDirection: 'row',
   justifyContent:'space-around',
@@ -246,6 +327,12 @@ filtercover: {
     alignSelf: 'center',
     alignItems: 'center',
     
+},
+filtersContainer: {
+  flexDirection: 'row',
+  justifyContent:'space-around',
+  paddingLeft:10,
+
 },
 filter: {
 fontWeight:'bold',

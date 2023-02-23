@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Checkbox from 'expo-checkbox';
 import { useHeaderHeight } from '@react-navigation/elements';
 import { MaskedTextInput } from "react-native-mask-text";
-
+import Avatar from '../Avatar';
 import { useState, useEffect } from 'react';
 import {
   ScrollView,
@@ -25,7 +25,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getData, saveData, updateData, getAllData } from '../utils';
 import { Button } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-
 
 
 
@@ -184,45 +183,7 @@ const Profile = ({ navigation }) => {
 
       <Text style={styles.itemTitle}>Avatar</Text>
 
-      <View style={styles.avatarcontainer}>
-
-  
-      {profilePicture ? (
-          <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-        ) : image ? (
-          <Image source={{ uri: image }} style={styles.profilePicture} />
-        ) : (
-          <View style={styles.initialsContainer}>
-            <Pressable style={styles.initials} ><Text style={{color:'white',fontWeight:'bold'}}>
-              {initials ? initials : generateInitials(name, lastName)}
-            </Text></Pressable>
-          </View>
-        )}
-
-
-
-        <Pressable style={styles.change} onPress={() => {
-pickImage()
-        }
-
-        }
-        >
-          <Text style={styles.buttonText}>Change</Text>
-
-
-        </Pressable>
-        <Pressable style={styles.remove}
-
-
-          onPress={() => {
-handleRemovePicture();
-          }
-
-          }
-        >
-          <Text style={styles.buttonText}>Remove</Text>
-        </Pressable>
-      </View>
+      <Avatar showButtons={'yes'}/>
 
       <Text style={styles.itemTitle}>First name</Text>
 
