@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     },
     inputClosedSearchIcon: {
         position: 'absolute',
-        right: 0,
+        left: 0,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
